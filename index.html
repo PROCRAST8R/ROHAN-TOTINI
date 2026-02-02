@@ -60,8 +60,8 @@ let player, obstacle, score, gameOver, win;
 
 /* ============== INIT FUNCTION ============== */
 function init() {
-  player = { x: 200, y: 1700, w: 120, h: 180, vy: 0, jump: -25, onGround: true };
-  obstacle = { x: 1080, y: 1680, w: 100, h: 100, speed: 12 };
+  player = { x: 200, y: 1650, w: 150, h: 220, vy: 0, jump: -25, onGround: true }; // size boro
+  obstacle = { x: 1080, y: 1720, w: 100, h: 100, speed: 12 }; // obstacle ke niche niye eshechi
   score = 0;
   gameOver = false;
   win = false;
@@ -142,7 +142,7 @@ function update() {
   /* Win condition */
   if (score >= 5) {
     win = true;
-    ctx.drawImage(girl, 800, 1600, 180, 220);
+    ctx.drawImage(girl, 800, 1580, 220, 260); // girl size boro
     ctx.fillStyle = "black";
     ctx.font = "80px Arial";
     ctx.fillText("PROPOSE SUCCESS ❤️", 200, 800);
