@@ -17,7 +17,6 @@
     }
     canvas {
       display: block;
-      background: #87CEEB;
     }
     #startBtn {
       position: absolute;
@@ -45,23 +44,28 @@
 <script>
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-
 const startBtn = document.getElementById("startBtn");
 
 /* ============== IMAGES ============== */
 const boy = new Image();
-boy.src = "https://i.postimg.cc/21s9yPVZ/image.png";
+boy.src = "https://i.postimg.cc/21s9yPVZ/image.png"; // Rohan
 
 const girl = new Image();
-girl.src = "https://i.postimg.cc/PCgVJBPP/image.png";
+girl.src = "https://i.postimg.cc/PCgVJBPP/image.png"; // Totini
+
+const obstacleImg = new Image();
+obstacleImg.src = "https://i.postimg.cc/Jz3LJ5LF/pngwing-com.png"; // Obstacle
+
+const bgImg = new Image();
+bgImg.src = "https://i.postimg.cc/8zgGjn2Q/canvas-image.png"; // Background
 
 /* ============== GAME VARIABLES ============== */
 let player, obstacle, score, gameOver, win;
 
 /* ============== INIT FUNCTION ============== */
 function init() {
-  player = { x: 200, y: 1650, w: 150, h: 220, vy: 0, jump: -25, onGround: true }; // size boro
-  obstacle = { x: 1080, y: 1720, w: 100, h: 100, speed: 12 }; // obstacle ke niche niye eshechi
+  player = { x: 200, y: 1650, w: 150, h: 220, vy: 0, jump: -25, onGround: true };
+  obstacle = { x: 1080, y: 1720, w: 120, h: 120, speed: 12 };
   score = 0;
   gameOver = false;
   win = false;
@@ -85,17 +89,11 @@ function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   /* Background */
-  ctx.fillStyle = "#87CEEB";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  /* Ground */
-  ctx.fillStyle = "#3CB371";
-  ctx.fillRect(0, 1800, canvas.width, canvas.height - 1800);
+  ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
   /* Player physics */
   player.vy += 1.2; // gravity
   player.y += player.vy;
-
   if (player.y >= 1800 - player.h) {
     player.y = 1800 - player.h;
     player.vy = 0;
@@ -114,9 +112,8 @@ function update() {
     }
   }
 
-  /* Draw obstacle */
-  ctx.fillStyle = "#8B4513";
-  ctx.fillRect(obstacle.x, obstacle.y, obstacle.w, obstacle.h);
+  /* Draw obstacle as image */
+  ctx.drawImage(obstacleImg, obstacle.x, obstacle.y, obstacle.w, obstacle.h);
 
   /* Collision detection */
   if (
@@ -134,7 +131,7 @@ function update() {
     ctx.font = "80px Arial";
     ctx.fillText("GAME OVER 😅", 200, 800);
     ctx.font = "50px Arial";
-    ctx.fillText("Tap/Click to Start Again", 180, 900);
+    ctx.fillText("", 180, 900);
     startBtn.style.display = "block";
     return;
   }
@@ -142,7 +139,7 @@ function update() {
   /* Win condition */
   if (score >= 5) {
     win = true;
-    ctx.drawImage(girl, 800, 1580, 220, 260); // girl size boro
+    ctx.drawImage(girl, 800, 1580, 220, 260);
     ctx.fillStyle = "black";
     ctx.font = "80px Arial";
     ctx.fillText("PROPOSE SUCCESS ❤️", 200, 800);
@@ -166,3 +163,4 @@ init();
 </script>
 </body>
 </html>
+
