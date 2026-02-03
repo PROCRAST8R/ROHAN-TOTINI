@@ -48,19 +48,31 @@ const startBtn = document.getElementById("startBtn");
 
 /* ============== IMAGES ============== */
 const boy = new Image();
-boy.src = "https://i.postimg.cc/21s9yPVZ/image.png"; // Rohan
+boy.src = "https://i.postimg.cc/21s9yPVZ/image.png";
 
 const girl = new Image();
-girl.src = "https://i.postimg.cc/PCgVJBPP/image.png"; // Totini
+girl.src = "https://i.postimg.cc/PCgVJBPP/image.png";
 
 const obstacleImg = new Image();
-obstacleImg.src = "https://i.postimg.cc/Jz3LJ5LF/pngwing-com.png"; // Obstacle
+obstacleImg.src = "https://i.postimg.cc/Jz3LJ5LF/pngwing-com.png";
 
 const bgImg = new Image();
-bgImg.src = "https://i.postimg.cc/8zgGjn2Q/canvas-image.png"; // Background
+bgImg.src = "https://i.postimg.cc/8zgGjn2Q/canvas-image.png";
+
+/* ============== SOUNDS (ONLY CHANGE FILE NAME HERE) ============== */
+const bgSound = new Audio("bg.mp3");     // background music
+bgSound.loop = true;
+bgSound.volume = 0.25;
+
+const jumpSound = new Audio("jump sound.mp3"); // jump sound
+jumpSound.volume = 0.4;
+
+const winSound = new Audio("win Sound.mp3");   // win sound
+winSound.volume = 0.6;
 
 /* ============== GAME VARIABLES ============== */
 let player, obstacle, score, gameOver, win;
+let winPlayed = false;
 
 /* ============== INIT FUNCTION ============== */
 function init() {
@@ -69,7 +81,12 @@ function init() {
   score = 0;
   gameOver = false;
   win = false;
+  winPlayed = false;
   startBtn.style.display = "none";
+
+  bgSound.currentTime = 0;
+  bgSound.play();
+
   requestAnimationFrame(update);
 }
 
@@ -78,9 +95,12 @@ function jump() {
   if (player.onGround && !gameOver && !win) {
     player.vy = player.jump;
     player.onGround = false;
+
+    jumpSound.currentTime = 0;
+    jumpSound.play();
   }
 }
-document.addEventListener("keydown", e => { if(e.code==="Space") jump(); });
+document.addEventListener("keydown", e => { if (e.code === "Space") jump(); });
 document.addEventListener("click", jump);
 document.addEventListener("touchstart", jump);
 
@@ -88,11 +108,9 @@ document.addEventListener("touchstart", jump);
 function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  /* Background */
   ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
-  /* Player physics */
-  player.vy += 1.2; // gravity
+  player.vy += 1.2;
   player.y += player.vy;
   if (player.y >= 1800 - player.h) {
     player.y = 1800 - player.h;
@@ -100,10 +118,8 @@ function update() {
     player.onGround = true;
   }
 
-  /* Draw player */
   ctx.drawImage(boy, player.x, player.y, player.w, player.h);
 
-  /* Obstacle move */
   if (!win) {
     obstacle.x -= obstacle.speed;
     if (obstacle.x < -obstacle.w) {
@@ -112,10 +128,8 @@ function update() {
     }
   }
 
-  /* Draw obstacle as image */
   ctx.drawImage(obstacleImg, obstacle.x, obstacle.y, obstacle.w, obstacle.h);
 
-  /* Collision detection */
   if (
     player.x < obstacle.x + obstacle.w &&
     player.x + player.w > obstacle.x &&
@@ -125,20 +139,26 @@ function update() {
     gameOver = true;
   }
 
-  /* Game Over */
+  /* GAME OVER */
   if (gameOver) {
+    bgSound.pause();
     ctx.fillStyle = "black";
     ctx.font = "80px Arial";
     ctx.fillText("GAME OVER 😅", 200, 800);
-    ctx.font = "50px Arial";
-    ctx.fillText("", 180, 900);
     startBtn.style.display = "block";
     return;
   }
 
-  /* Win condition */
+  /* WIN */
   if (score >= 5) {
     win = true;
+    bgSound.pause();
+
+    if (!winPlayed) {
+      winSound.play();
+      winPlayed = true;
+    }
+
     ctx.drawImage(girl, 800, 1580, 220, 260);
     ctx.fillStyle = "black";
     ctx.font = "80px Arial";
@@ -147,7 +167,6 @@ function update() {
     return;
   }
 
-  /* Score */
   ctx.fillStyle = "black";
   ctx.font = "50px Arial";
   ctx.fillText("Score: " + score, 50, 100);
@@ -155,12 +174,11 @@ function update() {
   requestAnimationFrame(update);
 }
 
-/* ============== START AGAIN BUTTON ============== */
+/* ============== START AGAIN ============== */
 startBtn.addEventListener("click", init);
 
-/* ============== INITIAL START ============== */
+/* ============== START GAME ============== */
 init();
 </script>
 </body>
 </html>
-
